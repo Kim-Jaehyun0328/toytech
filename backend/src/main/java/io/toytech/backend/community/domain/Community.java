@@ -2,6 +2,7 @@ package io.toytech.backend.community.domain;
 
 import io.toytech.backend.comment.domain.Comment;
 import io.toytech.backend.community.constant.CommunityType;
+import io.toytech.backend.community.dto.CommunityDto;
 import io.toytech.backend.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,10 +18,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@ToString(of = {"id", "title", "content", "views", "likes", "dislikes", "communityType"})
 public class Community {
 
   @Id
@@ -31,9 +36,9 @@ public class Community {
   private String title;
   private String content;
 
-  private int views;
-  private int likes;
-  private int dislikes;
+  private int views = 0;
+  private int likes = 0;
+  private int dislikes = 0;
 
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
@@ -48,5 +53,31 @@ public class Community {
   @OneToMany(mappedBy = "community")
   private List<Comment> comments = new ArrayList<>();
 
+  public static Community createCommunity(CommunityDto communityDto, Member member) {
+    Community community = new Community();
+    community.member = member;
+    community.title = communityDto.getTitle();
+    community.content = communityDto.getContent();
+    community.communityType = communityDto.getCommunityType();
+    community.createdAt = LocalDateTime.now();
+    community.modifiedAt = LocalDateTime.now();
+
+    return community;
+  }
+
+  public void updateCommunity(CommunityDto communityDto) {
+    title = communityDto.getTitle();
+    content = communityDto.getContent();
+    modifiedAt = LocalDateTime.now();
+    communityType = communityDto.getCommunityType();
+  }
+
+  public CommunityDto toDto() {
+    CommunityDto communityDto = new CommunityDto();
+    communityDto.setId(id);
+    communityDto.setTitle(title);
+    communityDto.setContent(content);
+    return communityDto;
+  }
 
 }
