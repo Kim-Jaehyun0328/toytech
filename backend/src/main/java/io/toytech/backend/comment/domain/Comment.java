@@ -1,6 +1,6 @@
 package io.toytech.backend.comment.domain;
 
-import io.toytech.backend.community.domain.Community;
+import io.toytech.backend.board.domain.Board;
 import io.toytech.backend.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +29,7 @@ public class Comment {
   private Member member;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "community_id")
-  private Community community;
+  @JoinColumn(name = "board_id")
+  private Board board;
 
 }

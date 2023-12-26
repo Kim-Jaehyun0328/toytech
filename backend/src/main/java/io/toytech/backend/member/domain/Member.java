@@ -1,7 +1,7 @@
 package io.toytech.backend.member.domain;
 
+import io.toytech.backend.board.domain.Board;
 import io.toytech.backend.comment.domain.Comment;
-import io.toytech.backend.community.domain.Community;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +26,7 @@ public class Member {
   private String name;
 
   @OneToMany(mappedBy = "member")
-  private List<Community> communities = new ArrayList<>();
+  private List<Board> communities = new ArrayList<>();
 
   @OneToMany(mappedBy = "member")
   private List<Comment> comments = new ArrayList<>();

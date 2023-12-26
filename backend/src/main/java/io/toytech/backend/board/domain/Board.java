@@ -1,8 +1,8 @@
-package io.toytech.backend.community.domain;
+package io.toytech.backend.board.domain;
 
+import io.toytech.backend.board.constant.BoardType;
+import io.toytech.backend.board.dto.BoardDto;
 import io.toytech.backend.comment.domain.Comment;
-import io.toytech.backend.community.constant.CommunityType;
-import io.toytech.backend.community.dto.CommunityDto;
 import io.toytech.backend.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,8 +25,8 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(of = {"id", "title", "content", "views", "likes", "dislikes", "communityType"})
-public class Community {
+@ToString(of = {"id", "title", "content", "views", "likes", "dislikes", "boardType"})
+public class Board {
 
   @Id
   @GeneratedValue
@@ -44,34 +44,34 @@ public class Community {
   private LocalDateTime modifiedAt;
 
   @Enumerated(EnumType.STRING)
-  private CommunityType communityType;
+  private BoardType boardType;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "community")
+  @OneToMany(mappedBy = "board")
   private List<Comment> comments = new ArrayList<>();
 
 
-  public static Community createCommunity(CommunityDto communityDto,
+  public static Board createBoard(BoardDto boardDto,
       Member member) { //엔티티로 변경 (저장을 위함)
-    Community community = new Community();
-    community.member = member;
-    community.title = communityDto.getTitle();
-    community.content = communityDto.getContent();
-    community.communityType = communityDto.getCommunityType();
-    community.createdAt = LocalDateTime.now();
-    community.modifiedAt = LocalDateTime.now();
+    Board board = new Board();
+    board.member = member;
+    board.title = boardDto.getTitle();
+    board.content = boardDto.getContent();
+    board.boardType = boardDto.getBoardType();
+    board.createdAt = LocalDateTime.now();
+    board.modifiedAt = LocalDateTime.now();
 
-    return community;
+    return board;
   }
 
-  public void updateCommunity(CommunityDto communityDto) { //업데이트
-    title = communityDto.getTitle();
-    content = communityDto.getContent();
+  public void updateBoard(BoardDto boardDto) { //업데이트
+    title = boardDto.getTitle();
+    content = boardDto.getContent();
     modifiedAt = LocalDateTime.now();
-    communityType = communityDto.getCommunityType();
+    boardType = boardDto.getBoardType();
   }
 
   public void updateView() {

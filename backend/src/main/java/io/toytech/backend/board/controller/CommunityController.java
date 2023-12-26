@@ -1,7 +1,7 @@
-package io.toytech.backend.community.controller;
+package io.toytech.backend.board.controller;
 
-import io.toytech.backend.community.dto.CommunityDto;
-import io.toytech.backend.community.service.CommunityService;
+import io.toytech.backend.board.dto.BoardDto;
+import io.toytech.backend.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class CommunityController {
 
-  private final CommunityService communityService;
+  private final BoardService boardService;
 
   @PostMapping("/community/new") //커뮤니티 생성 첨부 파일이 없는
-  public Long createCommunity(@RequestBody CommunityDto communityDto) {
-    Long id = communityService.createCommunity(communityDto);
+  public Long createBoard(@RequestBody BoardDto boardDto) {
+    Long id = boardService.createBoard(boardDto);
     return id;
   }
 
   @GetMapping("/community/{communityId}")
-  public CommunityDto getCommunity(@PathVariable("communityId") Long id) {
-    return communityService.findOne(id);
+  public BoardDto getBoard(@PathVariable("communityId") Long id) {
+    return boardService.findOne(id);
   }
 
   @PatchMapping("/community/{communityId}/edit") //커뮤니티 수정 (제목, 본문, 타입, 수정된 날짜가 바뀜)
-  public Long updateCommunity(@PathVariable("communityId") Long id,
-      @RequestBody CommunityDto communityDto) {
-    communityService.updateCommunity(id, communityDto);
+  public Long updateBoard(@PathVariable("communityId") Long id,
+      @RequestBody BoardDto boardDto) {
+    boardService.updateBoard(id, boardDto);
     return id;
   }
 }
