@@ -48,14 +48,14 @@ public class Board {
   @Enumerated(EnumType.STRING)
   private BoardType boardType;
 
-  @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
   private List<BoardFile> boardFiles = new ArrayList<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
   private List<Comment> comments = new ArrayList<>();
 
 
@@ -73,11 +73,13 @@ public class Board {
     this.boardFiles = boardFiles;
   }
 
-  public void updateBoard(BoardDto boardDto) { //업데이트 (첨부파일 고려해서 다시 해야 함)
+  public void updateBoard(BoardDto boardDto,
+      List<BoardFile> boardFiles) { //업데이트 (첨부파일 고려해서 다시 해야 함)
     title = boardDto.getTitle();
     content = boardDto.getContent();
     modifiedAt = LocalDateTime.now();
     boardType = boardDto.getBoardType();
+    this.boardFiles = boardFiles;
   }
 
   public void updateView() {

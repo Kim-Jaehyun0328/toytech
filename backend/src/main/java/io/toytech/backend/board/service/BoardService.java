@@ -27,7 +27,12 @@ public class BoardService {
 
 
   @Transactional
-  public BoardDto findOne(Long id) {
+  public Board findOneForDelete(Long id) {
+    return boardRepository.findById(id).get();
+  }
+
+  @Transactional
+  public BoardDto findOne(Long id) { //게시글 조회
     Board board = boardRepository.findById(id).get();
     board.updateView(); //조회수 1 증가
 
@@ -35,7 +40,7 @@ public class BoardService {
   }
 
   @Transactional
-  public Long createBoard(BoardDto boardDto) throws IOException {
+  public Long createBoard(BoardDto boardDto) throws IOException {   //게시글 생성
     Member member = Member.createMember(); //가정의 유저 생성
     memberRepository.save(member);
 
@@ -53,13 +58,25 @@ public class BoardService {
   }
 
   @Transactional
-  public void updateBoard(Long id, BoardDto boardDto) {
-    Board board = boardRepository.findById(id).get();
-    board.updateBoard(boardDto);
+  public void updateBoard(Long id, BoardDto boardDto)
+      throws IOException {  //게시글 수정 (첨부 파일을 완전 지웠다 새걸로 갈아끼움)
+    Board board = boardRepository.findById(id).get();  //보드 가져오기
+    List<BoardFile> beforeUpdateBoardFiles = board.getBoardFiles();  //기존 첨부파일 불러오기 (삭제해야함)
+    List<BoardFile> boardFiles = fileStore.storeFiles(boardDto.getMultipartFiles());  //수정한 첨부파일
+    board.updateBoard(boardDto, boardFiles); //업데이트
+
+    boardFileService.deleteBoardFiles(beforeUpdateBoardFiles);
+    for (BoardFile boardFile : boardFiles) {  //수정한 첨부파일 db에 저장
+      boardFile.connetBoardId(board);
+    }
+
+    boardFileService.deleteBoardFiles(beforeUpdateBoardFiles); //기존 첨부파일 삭제
+    boardFileService.deleteBoardFileInDB(beforeUpdateBoardFiles);
+
   }
 
   @Transactional
-  public void deleteBoard(Long id) {
+  public void deleteBoard(Long id) { //게시글 삭제
     boardRepository.deleteById(id);
   }
 

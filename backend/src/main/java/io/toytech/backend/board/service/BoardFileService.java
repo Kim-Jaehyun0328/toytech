@@ -1,7 +1,6 @@
 package io.toytech.backend.board.service;
 
 import io.toytech.backend.board.domain.BoardFile;
-import io.toytech.backend.board.dto.BoardFileDto;
 import io.toytech.backend.board.repository.BoardFileRepository;
 import jakarta.persistence.PreRemove;
 import java.io.File;
@@ -31,13 +30,13 @@ public class BoardFileService {
 
 
   @PreRemove
-  public void deleteBoardFiles(List<BoardFileDto> boardFiles) {
-    for (BoardFileDto boardFile : boardFiles) {
-      deleteBoardFile(boardFile.getSavedFileName());
+  public void deleteBoardFiles(List<BoardFile> boardFiles) {
+    for (BoardFile boardFile : boardFiles) {
+      deleteBoardFileInLocal(boardFile.getSavedFileName());
     }
   }
 
-  private void deleteBoardFile(String savedFileName) {
+  private void deleteBoardFileInLocal(String savedFileName) {
     File file = new File(fileDir + savedFileName);
     if (file.exists()) {
       if (file.delete()) {
@@ -48,4 +47,10 @@ public class BoardFileService {
     }
   }
 
+  @Transactional
+  public void deleteBoardFileInDB(List<BoardFile> boardFiles) {
+    for (BoardFile boardFile : boardFiles) {
+      boardFileRepository.delete(boardFile);
+    }
+  }
 }
