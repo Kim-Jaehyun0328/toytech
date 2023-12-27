@@ -2,10 +2,11 @@ package io.toytech.backend.board.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,17 +22,27 @@ public class BoardFile {
   @Column(name = "board_file_id")
   private Long id;
 
-  private Long boardId;
-  private String delYn;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "board_id")
+  private Board board;
 
-  @OneToOne
-  @JoinColumn(name = "file_id") //연관키는 보드파일이 가지고 있음
-  private File file;
+  private String originFileName;
+  private String savedFileName;
+
+  public BoardFile(String originFileName, String savedFileName) {
+    this.originFileName = originFileName;
+    this.savedFileName = savedFileName;
+  }
 
   @Builder
-  public BoardFile(Long boardId, Long fileId, String delYn, File file) {
-    this.boardId = boardId;
-    this.delYn = "N";
-    this.file = file;
+  public BoardFile(Board board, String originFileName, String savedFileName) {
+    this.board = board;
+    this.originFileName = originFileName;
+    this.savedFileName = savedFileName;
   }
+
+  public void connetBoardId(Board board) {
+    this.board = board;
+  }
+
 }

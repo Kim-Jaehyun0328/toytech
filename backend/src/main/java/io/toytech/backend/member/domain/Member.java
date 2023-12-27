@@ -26,7 +26,7 @@ public class Member {
   private String name;
 
   @OneToMany(mappedBy = "member")
-  private List<Board> communities = new ArrayList<>();
+  private List<Board> boards = new ArrayList<>();
 
   @OneToMany(mappedBy = "member")
   private List<Comment> comments = new ArrayList<>();

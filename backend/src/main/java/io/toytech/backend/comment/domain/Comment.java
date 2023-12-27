@@ -23,8 +23,6 @@ public class Comment {
   @Column(name = "comment_id")
   private Long id;
 
-  private String text; //댓글 내용
-
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
@@ -32,4 +30,11 @@ public class Comment {
   @JoinColumn(name = "board_id")
   private Board board;
 
+  private String text; //댓글 내용
+
+  public Comment(Member member, Board board, String text) {
+    this.member = member;
+    this.board = board;
+    this.text = text;
+  }
 }

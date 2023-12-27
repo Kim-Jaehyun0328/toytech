@@ -4,6 +4,7 @@ import io.toytech.backend.board.constant.BoardType;
 import io.toytech.backend.board.dto.BoardDto;
 import io.toytech.backend.comment.domain.Comment;
 import io.toytech.backend.member.domain.Member;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -30,7 +32,7 @@ public class Board {
 
   @Id
   @GeneratedValue
-  @Column(name = "community_id")
+  @Column(name = "board_id")
   private Long id;
 
   private String title;
@@ -46,28 +48,32 @@ public class Board {
   @Enumerated(EnumType.STRING)
   private BoardType boardType;
 
+  @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<BoardFile> boardFiles = new ArrayList<>();
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "board")
+  @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
 
 
-  public static Board createBoard(BoardDto boardDto,
-      Member member) { //엔티티로 변경 (저장을 위함)
-    Board board = new Board();
-    board.member = member;
-    board.title = boardDto.getTitle();
-    board.content = boardDto.getContent();
-    board.boardType = boardDto.getBoardType();
-    board.createdAt = LocalDateTime.now();
-    board.modifiedAt = LocalDateTime.now();
-
-    return board;
+  @Builder
+  public Board(String title, String content, BoardType boardType, Member member,
+      List<Comment> comments,
+      List<BoardFile> boardFiles) {
+    this.title = title;
+    this.content = content;
+    this.createdAt = LocalDateTime.now();
+    this.modifiedAt = LocalDateTime.now();
+    this.boardType = boardType;
+    this.member = member;
+    this.comments = comments;
+    this.boardFiles = boardFiles;
   }
 
-  public void updateBoard(BoardDto boardDto) { //업데이트
+  public void updateBoard(BoardDto boardDto) { //업데이트 (첨부파일 고려해서 다시 해야 함)
     title = boardDto.getTitle();
     content = boardDto.getContent();
     modifiedAt = LocalDateTime.now();

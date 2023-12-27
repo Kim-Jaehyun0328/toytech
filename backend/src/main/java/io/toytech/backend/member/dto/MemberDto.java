@@ -16,7 +16,7 @@ public class MemberDto {
   private Long id;
   private String name;
 
-  private List<BoardDto> communities = new ArrayList<>();
+  private List<BoardDto> boards = new ArrayList<>();
 
   private List<CommentDto> comments;
 
@@ -24,7 +24,7 @@ public class MemberDto {
   public MemberDto(Member member) {
     this.id = member.getId();
     this.name = member.getName();
-    this.communities = member.getCommunities().stream()
+    this.boards = member.getBoards().stream()
         .map(c -> new BoardDto(c)).collect(Collectors.toList());
     this.comments = member.getComments().stream()
         .map(c -> new CommentDto(c)).collect(Collectors.toList());

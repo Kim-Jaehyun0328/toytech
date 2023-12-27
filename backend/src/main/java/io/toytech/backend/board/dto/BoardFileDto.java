@@ -2,8 +2,6 @@ package io.toytech.backend.board.dto;
 
 
 import io.toytech.backend.board.domain.BoardFile;
-import io.toytech.backend.board.domain.File;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -11,21 +9,21 @@ public class BoardFileDto {
 
   private Long id;
 
-  private Long boardId;
+  private String originFileName;
+  private String savedFileName;
 
-  public BoardFileDto() {
 
+  public BoardFileDto(BoardFile boardFile) {
+    this.id = boardFile.getId();
+    this.originFileName = boardFile.getOriginFileName();
+    this.savedFileName = boardFile.getSavedFileName();
   }
 
-  @Builder
-  public BoardFileDto(Long boardId) {
-    this.boardId = boardId;
-  }
 
-  public BoardFile toEntity(File file) {
+  public BoardFile toEntity() {
     return BoardFile.builder()
-        .boardId(boardId)
-        .file(file)
+        .originFileName(originFileName)
+        .savedFileName(savedFileName)
         .build();
   }
 }

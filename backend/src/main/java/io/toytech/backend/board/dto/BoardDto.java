@@ -3,7 +3,9 @@ package io.toytech.backend.board.dto;
 
 import io.toytech.backend.board.constant.BoardType;
 import io.toytech.backend.board.domain.Board;
+import io.toytech.backend.board.domain.BoardFile;
 import io.toytech.backend.comment.dto.CommentDto;
+import io.toytech.backend.member.domain.Member;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.LocalDateTime;
@@ -41,16 +43,20 @@ public class BoardDto {
 
   private List<CommentDto> comments;
 
+  private List<BoardFileDto> boardFiles = new ArrayList<>();
+
   private List<MultipartFile> multipartFiles = new ArrayList<>();
 
 
-  public BoardDto(String title, String content, BoardType boardType) {
+  public BoardDto(String title, String content, BoardType boardType,  //처음 게시글 생성할 때
+      List<MultipartFile> multipartFiles) {
     this.title = title;
     this.content = content;
     this.boardType = boardType;
+    this.multipartFiles = multipartFiles;
   }
 
-  public BoardDto(Board board) { //toDto
+  public BoardDto(Board board) { //toDto  바깥으로 조회해야할때
     this.id = board.getId();
     this.title = board.getTitle();
     this.content = board.getContent();
@@ -64,5 +70,19 @@ public class BoardDto {
     this.name = board.getMember().getName();
     this.comments = board.getComments().stream() //이것도 무한 루프인 지 확인해봐야함
         .map(c -> new CommentDto(c)).collect(Collectors.toList());
+    this.boardFiles = board.getBoardFiles().stream()
+        .map(bf -> new BoardFileDto(bf)).collect(Collectors.toList());
   }
+
+  public Board toEntity(Member member, List<BoardFile> boardFile) {
+    return Board.builder()
+        .member(member)
+        .title(this.title)
+        .content(this.content)
+        .boardType(this.boardType)
+        .boardFiles(boardFile)
+        .build();
+  }
+
+
 }
