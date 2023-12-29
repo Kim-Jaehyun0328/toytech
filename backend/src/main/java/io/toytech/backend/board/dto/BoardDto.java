@@ -28,8 +28,7 @@ public class BoardDto {
   private String content;
 
   private int views;
-  private int likes;
-  private int dislikes;
+  private int likeCount;
 
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
@@ -61,8 +60,7 @@ public class BoardDto {
     this.title = board.getTitle();
     this.content = board.getContent();
     this.views = board.getViews();
-    this.likes = board.getLikes();
-    this.dislikes = board.getDislikes();
+    this.likeCount = board.getLikeCount();
     this.createdAt = board.getCreatedAt();
     this.modifiedAt = board.getModifiedAt();
     this.boardType = board.getBoardType();

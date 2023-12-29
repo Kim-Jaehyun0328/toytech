@@ -27,7 +27,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(of = {"id", "title", "content", "views", "likes", "dislikes", "boardType"})
+@ToString(of = {"id", "title", "content", "views", "likeCount", "boardType"})
 public class Board {
 
   @Id
@@ -39,8 +39,7 @@ public class Board {
   private String content;
 
   private int views = 0;
-  private int likes = 0;
-  private int dislikes = 0;
+  private int likeCount = 0;
 
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
@@ -57,6 +56,8 @@ public class Board {
 
   @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
   private List<Comment> comments = new ArrayList<>();
+
+  private int commentCount = comments.size();
 
 
   @Builder
@@ -84,6 +85,10 @@ public class Board {
 
   public void updateView() {
     this.views += 1;
+  }
+
+  public void updateLikeCount(int num) {
+    this.likeCount += num;
   }
 
 }

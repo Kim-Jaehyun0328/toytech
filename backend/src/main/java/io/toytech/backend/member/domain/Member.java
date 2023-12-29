@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
+  private static long num = 1;
   @Id
   @GeneratedValue
   @Column(name = "member_id")
   private Long id;
-
   private String name;
 
   @OneToMany(mappedBy = "member")
@@ -34,7 +34,8 @@ public class Member {
 
   public static Member createMember() {
     Member member = new Member();
-    member.name = "userA";
+    member.name = "user" + num;
+    num += 1;
     return member;
   }
 

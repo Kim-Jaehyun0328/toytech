@@ -1,5 +1,6 @@
 package io.toytech.backend.board.service;
 
+import io.toytech.backend.board.constant.BoardType;
 import io.toytech.backend.board.domain.Board;
 import io.toytech.backend.board.domain.BoardFile;
 import io.toytech.backend.board.dto.BoardDto;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +30,12 @@ public class BoardService {
 
 
   @Transactional
-  public Board findOneForDelete(Long id) {
+  public Board findOneReturnEntity(Long id) {
     return boardRepository.findById(id).get();
   }
 
   @Transactional
-  public BoardDto findOne(Long id) { //게시글 조회
+  public BoardDto findOneReturnDto(Long id) { //게시글 조회
     Board board = boardRepository.findById(id).get();
     board.updateView(); //조회수 1 증가
 
@@ -80,4 +83,17 @@ public class BoardService {
     boardRepository.deleteById(id);
   }
 
+
+  @Transactional
+  public void updateLikeCount(Board board, int num) { //num이 1이면 좋아요 +1, -1이면 좋아요 -1
+    board.updateLikeCount(num);
+  }
+
+  public Page<Board> getBoards(Pageable pageable) {
+    return boardRepository.findAll(pageable);
+  }
+
+  public Page<Board> getBoardsByType(BoardType boardType, Pageable pageable) {
+    return boardRepository.findByBoardType(boardType, pageable);
+  }
 }
